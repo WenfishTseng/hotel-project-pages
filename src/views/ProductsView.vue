@@ -1,4 +1,11 @@
 <template>
+  <Loading
+    v-model:active="isLoading"
+    :can-cancel="true"
+    :on-cancel="onCancel"
+    :is-full-page="fullPage"
+  ></Loading>
+
   <div class="container">
     <div class="row row-cols-1 row-cols-lg-4 g-3">
       <div class="col" v-for="product in products" :key="product.id">
@@ -24,7 +31,8 @@
           <div class="card-footer bg-transparent border-top-0">
             <div class="btn-group btn-group-sm">
               <!-- 打開單一產品視窗 -->
-              <router-link :to="`/products/${product.id}`"
+              <router-link
+                :to="`/products/${product.id}`"
                 class="btn btn-outline-secondary"
               >
                 <!-- 讀取圖示 若id相同 出現icon-->
@@ -55,6 +63,8 @@
 
 <script>
 import emitter from '@/libs/emitter.js'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 
 export default {
   name: 'ProductsView',
@@ -62,19 +72,24 @@ export default {
     return {
       products: {},
       isLoadingItem: '',
+      isLoading: false,
       isCartLoadingItem: ''
     }
   },
+  components: { Loading },
   methods: {
     getProducts () {
+      this.isLoading = true
       this.$http
         .get(
           `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/products/all`
         )
         .then((response) => {
           this.products = response.data.products
+          this.isLoading = false
         })
         .catch((error) => {
+          this.isLoading = false
           alert(error.data.message)
         })
     },

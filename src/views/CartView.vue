@@ -1,4 +1,10 @@
 <template>
+  <Loading
+    v-model:active="isLoading"
+    :can-cancel="true"
+    :on-cancel="onCancel"
+    :is-full-page="fullPage"
+  ></Loading>
   <div class="container mt-3">
     <div class="text-end">
       <button
@@ -94,23 +100,30 @@
 
 <script>
 import emitter from '@/libs/emitter.js'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 
 export default {
   data () {
     return {
       // 購物車列表
-      cartData: {}
+      cartData: {},
+      isLoading: false
     }
   },
+  components: { Loading },
   methods: {
     getCarts () {
+      this.isLoading = true
       this.$http
         .get(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`)
         .then((response) => {
           this.cartData = response.data.data
           emitter.emit('get-cart')
+          this.isLoading = false
         })
         .catch((error) => {
+          this.isLoading = false
           alert(error)
         })
     },

@@ -1,5 +1,10 @@
 import { createApp } from 'vue'
 import 'bootstrap'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import VueLoading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -12,6 +17,7 @@ import { required, email, min, max } from '@vee-validate/rules'
 import { localize, setLocale } from '@vee-validate/i18n'
 // 匯入繁體中文語系檔案
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
+import { date } from './methods/filters'
 import App from './App.vue'
 import router from './router'
 
@@ -28,6 +34,9 @@ configure({
 // 設定預設語系
 setLocale('zh_TW')
 const app = createApp(App).use(router)
+app.config.globalProperties.$filters = { date }
+app.use(VueToast)
+app.use(VueLoading)
 app.use(VueAxios, axios)
 // 註冊 vee-validate 三個全域元件
 app.component('Form', Form)
