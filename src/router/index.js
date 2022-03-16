@@ -13,7 +13,10 @@ const routes = [
       },
       {
         path: 'products',
-        component: () => import('../views/ProductsView.vue')
+        component: () => import('../views/ProductsView.vue'),
+        meta: {
+          title: '產品頁面喔!'
+        }
       },
       {
         path: 'products/:id',
@@ -53,6 +56,13 @@ const router = createRouter({
   history: createWebHashHistory(),
   linkActiveClass: 'active',
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
 })
 
 export default router
